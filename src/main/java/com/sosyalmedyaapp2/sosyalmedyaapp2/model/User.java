@@ -3,6 +3,7 @@ package com.sosyalmedyaapp2.sosyalmedyaapp2.model;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.AuthProvider;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.Gender;
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,6 +1,7 @@
 package com.sosyalmedyaapp2.sosyalmedyaapp2.controller;
 
 import com.sosyalmedyaapp2.sosyalmedyaapp2.model.User;
+import com.sosyalmedyaapp2.sosyalmedyaapp2.response.LoginLocalResponse;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/giris-yap/local")
-    public ResponseEntity<User> lokalGiris(@RequestBody User user) {
-    return ResponseEntity.ok(userService.loginUserForLocal(user));
+    public ResponseEntity<User> lokalGiris(@RequestBody LoginLocalResponse loginLocalResponse) {
+    return ResponseEntity.ok(userService.loginUserForLocal(loginLocalResponse));
     }
 
     @GetMapping("/giris-yap/google")
@@ -39,9 +40,9 @@ public class AuthController {
         return ResponseEntity.ok("Yönlendiriliyor...");
     }
 
-    @GetMapping("/girisBasarili")
-    public ResponseEntity<String > girisBasariliGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) throws IOException{
-        User user = userService.loginUserForGoogle(oAuth2AuthenticationToken);
+    @GetMapping("/loginSuccess")
+    public ResponseEntity<?> girisBasariliGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        userService.loginUserForGoogle(oAuth2AuthenticationToken);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).location(URI.create("http://localhost:3000/anasayfa")).build();
     }
 }

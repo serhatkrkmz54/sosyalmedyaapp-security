@@ -24,8 +24,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/giris-yap/google")
-                        .defaultSuccessUrl("/girisBasarili",true)
-                        .failureUrl("/girisBasarisiz"))
+                        .defaultSuccessUrl("/loginSuccess",true)
+                        .failureUrl("/loginFailure"))
                 .logout(logout-> logout
                         .logoutUrl("/cikis-yap")
                         .logoutSuccessUrl("/giris-yap/local")

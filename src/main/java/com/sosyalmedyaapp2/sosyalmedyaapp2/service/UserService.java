@@ -3,6 +3,7 @@ package com.sosyalmedyaapp2.sosyalmedyaapp2.service;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.AuthProvider;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.model.User;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.repo.UserRepository;
+import com.sosyalmedyaapp2.sosyalmedyaapp2.response.LoginLocalResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,14 +26,24 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User registerUserForLocal(User user) {
+//        LocalDate birthDate;
+//        try{
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+//            String format = user.getBirthdate().format(formatter);
+//            birthDate = LocalDate.parse(String.valueOf(user.getBirthdate()),formatter);
+//            birthDate = user.getBirthdate();
+//            user.setBirthdate(LocalDate.parse(String.valueOf(birthDate)));
+//        }catch (DateTimeParseException e) {
+//            throw new RuntimeException("Doğum tarihi yıl/ay/gün şeklinde olmalıdır.");
+//        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setAuthprovide(AuthProvider.LOCAL);
         return userRepository.save(user);
     }
-    public User loginUserForLocal(User user) {
-        User kullaniciKontrol = userRepository.findByEmail(user.getEmail()).orElse(null);
+    public User loginUserForLocal(LoginLocalResponse loginLocalResponse) {
+        User kullaniciKontrol = userRepository.findByEmail(loginLocalResponse.getEmail()).orElse(null);
         if(kullaniciKontrol!=null) {
-            if(!passwordEncoder.matches(user.getPassword(),kullaniciKontrol.getPassword())){
+            if(!passwordEncoder.matches(loginLocalResponse.getPassword(),kullaniciKontrol.getPassword())){
                 throw new RuntimeException("Kullanıcı parolası eşleşmiyor!");
             }
             return kullaniciKontrol;
