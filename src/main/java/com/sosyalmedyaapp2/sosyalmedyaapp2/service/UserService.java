@@ -1,6 +1,7 @@
 package com.sosyalmedyaapp2.sosyalmedyaapp2.service;
 
 import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.AuthProvider;
+import com.sosyalmedyaapp2.sosyalmedyaapp2.model.Post;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.model.User;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.repo.UserRepository;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.response.LoginLocalResponse;
@@ -11,33 +12,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
+    private final MinioService minioService;
 
-    public User registerUserForLocal(User user) {
-//        LocalDate birthDate;
-//        try{
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-//            String format = user.getBirthdate().format(formatter);
-//            birthDate = LocalDate.parse(String.valueOf(user.getBirthdate()),formatter);
-//            birthDate = user.getBirthdate();
-//            user.setBirthdate(LocalDate.parse(String.valueOf(birthDate)));
-//        }catch (DateTimeParseException e) {
-//            throw new RuntimeException("Doğum tarihi yıl/ay/gün şeklinde olmalıdır.");
-//        }
+    public User registerUserForLocal(User user, MultipartFile profilePictureFile) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setAuthprovide(AuthProvider.LOCAL);
+        if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
+            String profilePicPath = minioService.uploadProfilePic(profilePictureFile, user.getEmail());
+            user.setProfilePicture(profilePicPath);
+        }
         return userRepository.save(user);
     }
     public User loginUserForLocal(LoginLocalResponse loginLocalResponse) {
@@ -67,6 +63,14 @@ public class UserService {
             return userRepository.save(user);
         }
         return user;
+    }
+
+    public List<Post> tumPostlariGetirEmail(String email) {
+        return userRepository.tumPostlarıGorEmail(email);
+    }
+
+    public List<Post> tumPostlariGetirID(Long userId) {
+        return userRepository.tumPostlariGorID(userId);
     }
 
 }

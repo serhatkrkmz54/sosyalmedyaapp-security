@@ -7,6 +7,8 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +33,9 @@ public class User {
     private String bio;
     @Column(name = "phoneNumber")
     private String phonenumber;
+    private String profilePicture;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
     @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdat;
     @Enumerated(EnumType.STRING)
@@ -100,6 +105,14 @@ public class User {
         this.phonenumber = phonenumber;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     public AuthProvider getAuthprovide() {
         return authprovide;
     }
@@ -129,7 +142,7 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String name, String surname, String email, String password, LocalDate birthdate, Gender gender, String bio, String phonenumber, LocalDateTime createdat, AuthProvider authprovide) {
+    public User(Long id, String name, String surname, String email, String password, LocalDate birthdate, Gender gender, String bio, String phonenumber, String profilePicture, LocalDateTime createdat, AuthProvider authprovide) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -139,6 +152,7 @@ public class User {
         this.gender = gender;
         this.bio = bio;
         this.phonenumber = phonenumber;
+        this.profilePicture = profilePicture;
         this.createdat = createdat;
         this.authprovide = authprovide;
     }
