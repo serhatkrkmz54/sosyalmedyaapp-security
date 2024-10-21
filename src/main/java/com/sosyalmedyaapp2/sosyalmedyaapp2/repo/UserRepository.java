@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     @Query("SELECT u.posts FROM  User u WHERE u.email = :email")
-    List<Post> tumPostlarıGorEmail(@Param("email") String email);
+    List<Post> tumPostlariGorEmail(@Param("email") String email);
 
     @Query("SELECT u.posts FROM User u WHERE u.id = :userId")
     List<Post> tumPostlariGorID(@Param("userId") Long userId);

@@ -4,15 +4,18 @@ import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.AuthProvider;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.enums.Gender;
 import jakarta.persistence.*;
 import org.springframework.cglib.core.Local;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -65,8 +68,38 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 
     public void setPassword(String password) {
@@ -95,6 +128,14 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     public String getPhonenumber() {
@@ -142,20 +183,20 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String name, String surname, String email, String password, LocalDate birthdate, Gender gender, String bio, String phonenumber, String profilePicture, LocalDateTime createdat, AuthProvider authprovide) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.birthdate = birthdate;
-        this.gender = gender;
-        this.bio = bio;
-        this.phonenumber = phonenumber;
-        this.profilePicture = profilePicture;
-        this.createdat = createdat;
-        this.authprovide = authprovide;
-    }
+//    public User(Long id, String name, String surname, String email, String password, LocalDate birthdate, Gender gender, String bio, String phonenumber, String profilePicture, LocalDateTime createdat, AuthProvider authprovide) {
+//        this.id = id;
+//        this.name = name;
+//        this.surname = surname;
+//        this.email = email;
+//        this.password = password;
+//        this.birthdate = birthdate;
+//        this.gender = gender;
+//        this.bio = bio;
+//        this.phonenumber = phonenumber;
+//        this.profilePicture = profilePicture;
+//        this.createdat = createdat;
+//        this.authprovide = authprovide;
+//    }
 
     public User() {
     }

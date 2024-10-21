@@ -1,22 +1,23 @@
 package com.sosyalmedyaapp2.sosyalmedyaapp2.response;
 
 public class LoginLocalResponse {
-    private String email;
-    private String password;
+    private String token;
+    private long expiresIn;
 
-    public String getEmail() {
-        return email;
+    public String getToken() {
+        return token;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getPassword() {
-        return password;
+    public long getExpiresIn() {
+        return expiresIn;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
     }
+
 }

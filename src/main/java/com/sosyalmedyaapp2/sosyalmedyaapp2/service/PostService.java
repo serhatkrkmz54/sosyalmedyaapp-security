@@ -1,6 +1,7 @@
 package com.sosyalmedyaapp2.sosyalmedyaapp2.service;
 
 import com.sosyalmedyaapp2.sosyalmedyaapp2.model.Post;
+import com.sosyalmedyaapp2.sosyalmedyaapp2.model.User;
 import com.sosyalmedyaapp2.sosyalmedyaapp2.repo.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public class PostService {
             String postPicturePath = minioService.uploadPostPic(postPictureFile,post.getUser().getEmail());
             post.setPostPicture(postPicturePath);
         }
+        post.setUser(new User());
         return postRepository.save(post);
     }
 }

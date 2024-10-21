@@ -8,6 +8,8 @@ import com.sosyalmedyaapp2.sosyalmedyaapp2.response.LoginLocalResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +28,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
     private final MinioService minioService;
 
     public User registerUserForLocal(User user, MultipartFile profilePictureFile) {
@@ -35,16 +39,6 @@ public class UserService {
             user.setProfilePicture(profilePicPath);
         }
         return userRepository.save(user);
-    }
-    public User loginUserForLocal(LoginLocalResponse loginLocalResponse) {
-        User kullaniciKontrol = userRepository.findByEmail(loginLocalResponse.getEmail()).orElse(null);
-        if(kullaniciKontrol!=null) {
-            if(!passwordEncoder.matches(loginLocalResponse.getPassword(),kullaniciKontrol.getPassword())){
-                throw new RuntimeException("Kullanıcı parolası eşleşmiyor!");
-            }
-            return kullaniciKontrol;
-        }
-        throw new RuntimeException("Kullanıcı bulunamadı!");
     }
 
     public User loginUserForGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken){
@@ -65,8 +59,24 @@ public class UserService {
         return user;
     }
 
+    public User authenticate(User user) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        user.getPassword()
+                )
+        );
+        return userRepository.findByEmail(user.getEmail()).orElseThrow();
+    }
+
+    public List<User> tumKullanicilar() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return users;
+    }
+
     public List<Post> tumPostlariGetirEmail(String email) {
-        return userRepository.tumPostlarıGorEmail(email);
+        return userRepository.tumPostlariGorEmail(email);
     }
 
     public List<Post> tumPostlariGetirID(Long userId) {
